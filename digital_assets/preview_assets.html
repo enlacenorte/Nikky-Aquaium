@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesa de Curaduría de Activos Digitales - Taylor'd Aquatics</title>
+  <link rel="icon" type="image/png" href="favicon-32x32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Montserrat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --deep-ocean: #071322;
+      --ocean-blue: #0f2744;
+      --card-bg: rgba(15, 39, 68, 0.7);
+      --aqua: #2dd4bf;
+      --sky: #38bdf8;
+      --gold: #fbbf24;
+      --coral: #ff7675;
+      --pearl: #f8fafc;
+      --seafoam: #a7f3d0;
+      --border: rgba(45, 212, 191, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--deep-ocean);
+      color: var(--pearl);
+      padding: 3rem 1.5rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge-header {
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--aqua);
+      background: rgba(45, 212, 191, 0.15);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--pearl);
+      margin-bottom: 0.8rem;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--aqua), var(--sky));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--seafoam);
+      font-size: 1.15rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    .section {
+      margin-bottom: 4.5rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--aqua);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      border-color: var(--aqua);
+      box-shadow: 0 15px 35px rgba(45, 212, 191, 0.18);
+      transform: translateY(-4px);
+    }
+
+    .asset-display {
+      background: rgba(7, 19, 34, 0.8);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      border: 1px dashed rgba(45, 212, 191, 0.2);
+      aspect-ratio: 16/9;
+    }
+
+    .asset-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .asset-display img {
+      transform: scale(1.03);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--pearl);
+      font-size: 1.05rem;
+    }
+
+    .tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(45, 212, 191, 0.15);
+      color: var(--aqua);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+    }
+
+    /* Interactive Comparison Slider */
+    .slider-wrapper {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+    }
+
+    .slider-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slider-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      border-right: 3px solid var(--aqua);
+      box-shadow: 0 0 20px var(--aqua);
+    }
+
+    .slider-overlay img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100vw;
+      max-width: 1280px;
+      object-fit: cover;
+    }
+
+    .slider-range {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 10;
+    }
+
+    .slider-label {
+      position: absolute;
+      bottom: 25px;
+      padding: 8px 20px;
+      background: rgba(7, 19, 34, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      border: 1px solid var(--border);
+      z-index: 5;
+    }
+
+    .label-before { left: 25px; color: var(--coral); }
+    .label-after { right: 25px; color: var(--aqua); }
+
+    /* Palette */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .color-swatch {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .color-box {
+      height: 65px;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge-header">Curaduría de Activos Digitales &bull; Taylor'd Aquatics</div>
+      <h1>Mesa de Control &bull; <span>Activos Visuales</span></h1>
+      <p class="subtitle">Inspección forense de fotografía 4K, identidad oficial de marca, sellos de confianza y módulos interactivos antes del ensamblado de la web.</p>
+    </header>
+
+    <!-- SECTION 1: BRANDING & IDENTITY -->
+    <div class="section">
+      <h2 class="section-title">1. Identidad de Marca y Favicon Oficial</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="asset-display" style="background: #071322; aspect-ratio: auto; height: 260px; padding: 1rem;">
+            <img src="isologo_master.png" alt="Logo Taylor'd Aquatics Oficial" style="max-height: 100%; object-fit: contain;">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">Isologotipo Maestro (Peces Gemelos Yin-Yang)</span>
+            <span class="tag">Oficial PNG HD</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="asset-display" style="background: #071322; aspect-ratio: auto; height: 260px; padding: 1rem;">
+            <img src="favicon-512x512.png" alt="Favicon Taylor'd Aquatics" style="max-height: 180px; object-fit: contain; border-radius: 24px; box-shadow: 0 0 30px rgba(45, 212, 191, 0.4);">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">Favicon &amp; Icono de Aplicación</span>
+            <span class="tag">32px / 192px / 512px / .ICO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: HERO MASTER ASSET -->
+    <div class="section">
+      <h2 class="section-title">2. Hero Banner Principal (4K Architectural Reef)</h2>
+      <div class="card">
+        <div class="asset-display" style="height: 480px; aspect-ratio: auto;">
+          <img src="hero_reef_4k.jpg" alt="Hero Background 4K Reef Aquarium">
+        </div>
+        <div class="card-meta">
+          <span class="card-title">Portada Hero: Arrecife de Lujo con Cáusticas de Luz Submarina</span>
+          <span class="tag">Fotografía 4K Ultra HD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: CORE SERVICE PILLARS -->
+    <div class="section">
+      <h2 class="section-title">3. Los 3 Pilares de Servicio (Tarjetas Principales)</h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="asset-display">
+            <img src="hero_reef_4k.jpg" alt="Acuarios de Agua Salada y Arrecife">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">1. Saltwater &amp; Reef Systems</span>
+            <span class="tag">Arrecife Marino</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="asset-display">
+            <img src="service_discus_planted.jpg" alt="Acuarios Plantados y Peces Disco">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">2. Tropical Discus &amp; Dutch Aquascaping</span>
+            <span class="tag">Agua Dulce Pro</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="asset-display">
+            <img src="service_pond_koi.jpg" alt="Estanques de Agua Fría y Peces Koi">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">3. Cold Water &amp; Garden Koi Ponds</span>
+            <span class="tag">Estanques Koi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: BEFORE & AFTER TRANSFORMATION -->
+    <div class="section">
+      <h2 class="section-title">4. Módulo Estrella: "Swamp to Shiny" (Antes / Después Interactivo)</h2>
+      <p style="margin-bottom: 1.2rem; color: var(--seafoam);">
+        Arrastra el separador para verificar la correspondencia espacial exacta entre el tanque invadido por algas y la restauración impecable.
+      </p>
+
+      <div class="slider-wrapper" id="sliderContainer">
+        <!-- After Image (Base) -->
+        <img class="slider-img" src="shiny_after.jpg" alt="Acuario limpio después del servicio">
+        
+        <!-- Before Image (Clipped Overlay) -->
+        <div class="slider-overlay" id="sliderOverlay">
+          <img src="swamp_before.jpg" alt="Acuario sucio antes del servicio">
+        </div>
+
+        <span class="slider-label label-before">⚠️ ANTES: Pantano &amp; Algas</span>
+        <span class="slider-label label-after">✨ DESPUÉS: Taylor'd Clean</span>
+
+        <input type="range" min="0" max="100" value="50" class="slider-range" id="sliderRange">
+      </div>
+    </div>
+
+    <!-- SECTION 5: TECHNICAL PORTFOLIO GALLERY -->
+    <div class="section">
+      <h2 class="section-title">5. Galería Técnica y Especialidades</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="asset-display">
+            <img src="gallery_sump_plumbing.jpg" alt="Plomería de sumidero y filtración técnica">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">Ingeniería de Filtración (Custom Sump &amp; Skimmer)</span>
+            <span class="tag">Instalación Técnica</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="asset-display">
+            <img src="gallery_iwagumi_zen.jpg" alt="Aquascaping estilo Iwagumi con rocas Seiryu">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">Paisajismo Zen Iwagumi (Piedras Seiryu &amp; Tapiz)</span>
+            <span class="tag">Aquascaping Zen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: TRUST & PARTNER BADGES -->
+    <div class="section">
+      <h2 class="section-title">6. Insignias de Confianza y Marcas Autorizadas</h2>
+      <div class="card">
+        <div class="asset-display" style="aspect-ratio: auto; height: 180px; padding: 1rem;">
+          <img src="trust_and_partner_badges.svg" alt="Sellos y Marcas" style="object-fit: contain;">
+        </div>
+        <div class="card-meta">
+          <span class="card-title">Badges Oficiales (Fauna Marin, BCUK, Elementals, Holiday Cover, Brighton Local)</span>
+          <span class="tag">Vectorial SVG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 7: COLOR TOKENS -->
+    <div class="section">
+      <h2 class="section-title">7. Paleta Cromática Marina Homologada</h2>
+      <div class="palette-grid">
+        <div class="color-swatch">
+          <div class="color-box" style="background: #071322;"></div>
+          <strong>Deep Ocean</strong><br><small>#071322</small>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: #0f2744;"></div>
+          <strong>Ocean Blue</strong><br><small>#0f2744</small>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: #2dd4bf;"></div>
+          <strong>Biolum Aqua</strong><br><small>#2dd4bf</small>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: #38bdf8;"></div>
+          <strong>Sky Coral</strong><br><small>#38bdf8</small>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: #fbbf24;"></div>
+          <strong>Reef Gold</strong><br><small>#fbbf24</small>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: #ff7675;"></div>
+          <strong>Living Coral</strong><br><small>#ff7675</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sliderRange = document.getElementById('sliderRange');
+    const sliderOverlay = document.getElementById('sliderOverlay');
+    
+    sliderRange.addEventListener('input', (e) => {
+      sliderOverlay.style.width = `${e.target.value}%`;
+    });
+  </script>
+</body>
+</html>

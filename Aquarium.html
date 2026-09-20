@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Taylor'd Aquatics | Bespoke Living Aquarium • Brighton &amp; Hove</title>
+  <meta name="description" content="Living 3D Pixar-style aquarium web app for Taylor'd Aquatics. Bespoke marine reef care, Discus aquascaping, and holiday tank cover in Brighton &amp; Hove by Nikki Taylor.">
+  
+  <!-- Favicon Package -->
+  <link rel="icon" type="image/x-icon" href="digital_assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="digital_assets/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="digital_assets/favicon-192x192.png">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700&family=Montserrat:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. CORE DESIGN TOKENS & IMMERSIVE STAGE
+       ========================================================================== */
+    :root {
+      --deep-abyss: #020b14;
+      --ocean-blue: #07203d;
+      --aqua: #2dd4bf;
+      --aqua-glow: rgba(45, 212, 191, 0.65);
+      --gold: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.85);
+      --sky: #38bdf8;
+      --coral: #ff7675;
+      --pearl: #f8fafc;
+      --seafoam: #a7f3d0;
+      --glass-bg: rgba(4, 18, 32, 0.84);
+      --glass-border: rgba(45, 212, 191, 0.35);
+      --font-display: 'Fredoka', cursive, sans-serif;
+      --font-chalk: 'Caveat', cursive, sans-serif;
+      --font-ui: 'Montserrat', sans-serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--deep-abyss);
+      color: var(--pearl);
+      font-family: var(--font-body);
+      position: fixed;
+    }
+
+    #aquariumApp {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--deep-abyss);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .aquarium-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 3D Pixar Backdrop: Clean Pristine Living Aquarium Stage */
+    .bg-aquarium {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center bottom;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .bg-landscape { display: block; }
+    .bg-portrait { display: none; }
+
+    @media (max-aspect-ratio: 1/1) {
+      .bg-landscape { display: none; }
+      .bg-portrait { display: block; }
+    }
+
+    /* Volumetric Sunbeams & Caustics */
+    .god-rays-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.38;
+      mix-blend-mode: screen;
+      background: 
+        linear-gradient(115deg, rgba(56, 189, 248, 0.4) 0%, transparent 45%),
+        linear-gradient(65deg, rgba(45, 212, 191, 0.3) 10%, transparent 60%),
+        radial-gradient(ellipse at 50% -10%, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+      animation: godRaysPulse 9s ease-in-out infinite alternate;
+    }
+
+    @keyframes godRaysPulse {
+      0% { opacity: 0.3; transform: scaleY(0.98) skewX(-1deg); }
+      50% { opacity: 0.48; transform: scaleY(1.02) skewX(1deg); }
+      100% { opacity: 0.32; transform: scaleY(1) skewX(-0.5deg); }
+    }
+
+    .surface-glint {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 45px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35) 0%, rgba(56, 189, 248, 0.15) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Living Marine Life & Water FX Canvas */
+    #waterFxCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      pointer-events: auto;
+      cursor: crosshair;
+    }
+
+    /* ==========================================================================
+       APP EXIT BUTTON [X] IN TOP-LEFT CORNER
+       ========================================================================== */
+    .btn-app-exit {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(4, 18, 32, 0.78);
+      border: 1.5px solid rgba(45, 212, 191, 0.45);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(45, 212, 191, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #f8fafc;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      pointer-events: auto;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-app-exit:hover {
+      background: rgba(4, 18, 32, 0.95);
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 18px var(--gold-glow);
+      transform: scale(1.08);
+    }
+
+    .btn-app-exit:active {
+      transform: scale(0.92);
+    }
+
+    /* ==========================================================================
+       2. DECOUPLED KINEMATIC SCUBA DIVER & CHALKBOARD RIG
+       ========================================================================== */
+    .diver-actor-rig {
+      position: absolute;
+      z-index: 7;
+      pointer-events: none;
+      aspect-ratio: 720 / 460;
+      transform-origin: 64% 8%; /* Natural swing from rope mount */
+      animation: diverBuoyancySway 8s ease-in-out infinite alternate;
+      transition: filter 0.3s ease;
+    }
+
+    @keyframes diverBuoyancySway {
+      0% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-12px) rotate(1.8deg); }
+      50% { transform: translateY(-22px) rotate(-1.5deg); }
+      75% { transform: translateY(-8px) rotate(-2.4deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    /* 16:9 Desktop Placement */
+    @media (min-aspect-ratio: 1/1) {
+      .diver-actor-rig {
+        top: 3%;
+        left: 21%;
+        width: 550px;
+        max-width: 48vw;
+      }
+    }
+
+    /* 9:16 Mobile Placement */
+    @media (max-aspect-ratio: 1/1) {
+      .diver-actor-rig {
+        top: 6%;
+        left: 50%;
+        width: 360px;
+        max-width: 92vw;
+        margin-left: -180px;
+        transform-origin: 50% 8%;
+        animation: diverBuoyancySwayMobile 7s ease-in-out infinite alternate;
+      }
+      @keyframes diverBuoyancySwayMobile {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-16px) rotate(-2.2deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
+      }
+    }
+
+    .diver-sprite-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 15px 28px rgba(2, 11, 20, 0.55));
+      pointer-events: none;
+    }
+
+    /* Chalkboard text zone precisely placed over the sprite's wooden chalkboard */
+    .diver-chalkboard-zone {
+      position: absolute;
+      top: 33.7%;
+      left: 34.7%;
+      width: 60.4%;
+      height: 30.4%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px 12px;
+      cursor: pointer;
+      pointer-events: auto;
+      border-radius: 6px;
+      transition: all 0.25s ease;
+    }
+
+    .diver-chalkboard-zone:hover {
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.75));
+    }
+
+    .chalk-badge {
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+      margin-bottom: 2px;
+      transition: opacity 0.35s ease;
+    }
+
+    .chalk-headline {
+      font-family: var(--font-chalk);
+      font-size: 1.28rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.35s ease;
+    }
+
+    .chalk-subline {
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--seafoam);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+      margin-top: 2px;
+      transition: opacity 0.35s ease;
+    }
+
+    .chalk-tap-hint {
+      display: inline-block;
+      margin-top: 3px;
+      background: rgba(4, 18, 32, 0.85);
+      border: 1px solid var(--aqua);
+      border-radius: 12px;
+      padding: 2px 9px;
+      font-family: var(--font-ui);
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--aqua);
+      box-shadow: 0 0 8px var(--aqua-glow);
+      white-space: nowrap;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    .diver-chalkboard-zone:hover .chalk-tap-hint {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--deep-abyss);
+      box-shadow: 0 0 14px var(--gold-glow);
+    }
+
+    @media (max-width: 600px) {
+      .diver-chalkboard-zone {
+        top: 36%;
+        height: 29%;
+        padding: 4px 8px;
+      }
+      .chalk-headline { font-size: 0.95rem; min-height: 26px; }
+      .chalk-badge { font-size: 0.54rem; margin-bottom: 1px; }
+      .chalk-subline { font-size: 0.54rem; margin-top: 1px; }
+      .chalk-tap-hint { font-size: 0.50rem; padding: 1px 6px; margin-top: 2px; }
+    }
+
+    /* ==========================================================================
+       3. HIGH-CONTRAST VIBRANT PEBBLE BRANDING (COMPACT & CENTERED)
+       ========================================================================== */
+    .pebble-brand-wrapper {
+      position: absolute;
+      z-index: 10;
+      pointer-events: auto;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .pebble-brand-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.9)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95));
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .pebble-brand-wrapper:hover .pebble-brand-img {
+      filter: drop-shadow(0 8px 18px rgba(45, 212, 191, 0.5)) drop-shadow(0 0 15px var(--gold-glow));
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .pebble-sub-caption {
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: var(--seafoam);
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
+      margin-top: -6px;
+      display: block;
+      text-align: center;
+      opacity: 0.95;
+    }
+
+    /* Desktop 16:9: Compact & Centered in foreground gravel */
+    @media (min-aspect-ratio: 1/1) {
+      .pebble-brand-wrapper {
+        bottom: 2.2%;
+        left: 45.5%;
+        transform: translateX(-50%);
+        width: 225px;
+      }
+    }
+
+    /* Mobile 9:16: Centered in gravel bed above contact stones */
+    @media (max-aspect-ratio: 1/1) {
+      .pebble-brand-wrapper {
+        bottom: 11%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 175px;
+      }
+      .pebble-sub-caption {
+        font-size: 0.54rem;
+        letter-spacing: 0.8px;
+        margin-top: -4px;
+      }
+    }
+
+    /* ==========================================================================
+       4. ARTICULATED SUNKEN TREASURE CHEST & VOLUMETRIC GOLD BEAM
+       ========================================================================== */
+    .treasure-chest-wrapper {
+      position: absolute;
+      z-index: 6;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform 0.3s ease;
+    }
+
+    /* 16:9 Landscape placement */
+    @media (min-aspect-ratio: 1/1) {
+      .treasure-chest-wrapper {
+        bottom: 15%;
+        left: 19.5%;
+        width: 17%;
+        height: 22%;
+      }
+    }
+
+    /* 9:16 Portrait placement */
+    @media (max-aspect-ratio: 1/1) {
+      .treasure-chest-wrapper {
+        bottom: 15%;
+        left: 10%;
+        width: 50%;
+        height: 19%;
+      }
+    }
+
+    .treasure-chest-wrapper:hover {
+      transform: scale(1.03);
+    }
+
+    .chest-interactive-hitbox {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Exit Confirmation Modal */
+    .exit-modal-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 11, 20, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .exit-modal-scrim.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .exit-modal-box {
+      width: 90%;
+      max-width: 420px;
+      background: linear-gradient(180deg, #07192b 0%, #030d17 100%);
+      border: 2px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--aqua-glow);
+      text-align: center;
+    }
+    .exit-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .exit-modal-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: var(--pearl);
+    }
+    .btn-exit-modal-close {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      color: var(--seafoam);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .exit-modal-text {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+    .exit-modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-stay-app {
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--aqua);
+      background: rgba(45, 212, 191, 0.15);
+      color: var(--aqua);
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+    }
+    .btn-stay-app:hover {
+      background: var(--aqua);
+      color: var(--deep-abyss);
+    }
+
+    /* ==========================================================================
+       5. SEABED CONTACT STONES & "SERVICES" NAUTICAL PLAQUE
+       ========================================================================== */
+    .stone-contact-spot {
+      position: absolute;
+      z-index: 6;
+      cursor: pointer;
+      pointer-events: auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .stone-glow-halo {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--stone-glow-color, var(--aqua));
+      opacity: 0.45;
+      animation: stoneHaloPulse 2.8s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes stoneHaloPulse {
+      0% { transform: scale(0.9); opacity: 0.85; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+
+    .stone-contact-spot:hover {
+      transform: scale(1.16);
+      filter: drop-shadow(0 0 24px var(--stone-glow-color, var(--aqua)));
+    }
+
+    .stone-tooltip-card {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: rgba(4, 15, 27, 0.95);
+      border: 1.5px solid var(--stone-glow-color, var(--aqua));
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--pearl);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+    }
+
+    .stone-contact-spot:hover .stone-tooltip-card {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 16:9 Landscape Hotspot Coordinates */
+    @media (min-aspect-ratio: 1/1) {
+      .spot-whatsapp {
+        bottom: 23%;
+        left: 62.5%;
+        width: 82px;
+        height: 82px;
+        --stone-glow-color: #25d366;
+      }
+      .spot-phone {
+        bottom: 40%;
+        left: 72%;
+        width: 82px;
+        height: 82px;
+        --stone-glow-color: #38bdf8;
+      }
+      .spot-facebook {
+        bottom: 25.5%;
+        left: 81.5%;
+        width: 86px;
+        height: 86px;
+        --stone-glow-color: #3b82f6;
+      }
+      .spot-instagram {
+        bottom: 14%;
+        left: 72%;
+        width: 68px;
+        height: 68px;
+        --stone-glow-color: #e1306c;
+        display: none;
+      }
+      .spot-ship-helm {
+        bottom: 2.5%;
+        right: 4.5%;
+        width: 110px;
+        height: 110px;
+      }
+      .plaque-services {
+        bottom: 1.8%;
+        right: 3.6%;
+        width: 114px;
+        height: 38px;
+      }
+    }
+
+    /* 9:16 Portrait Hotspot Coordinates */
+    @media (max-aspect-ratio: 1/1) {
+      .spot-whatsapp {
+        bottom: 4%;
+        left: 30%;
+        width: 72px;
+        height: 72px;
+        --stone-glow-color: #25d366;
+      }
+      .spot-phone {
+        bottom: 4%;
+        left: 50%;
+        width: 72px;
+        height: 72px;
+        --stone-glow-color: #38bdf8;
+      }
+      .spot-facebook {
+        bottom: 4%;
+        left: 70%;
+        width: 72px;
+        height: 72px;
+        --stone-glow-color: #3b82f6;
+      }
+      .spot-instagram {
+        bottom: 12%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        --stone-glow-color: #e1306c;
+        display: none;
+      }
+      .spot-ship-helm {
+        bottom: 3.5%;
+        right: 3.5%;
+        width: 85px;
+        height: 85px;
+      }
+      .plaque-services {
+        bottom: 6.5%;
+        right: 1.2%;
+        width: 96px;
+        height: 32px;
+        font-size: 0.74rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 10px rgba(251, 191, 36, 0.4);
+      }
+    }
+
+    /* Ship Helm Rotation */
+    .spot-ship-helm {
+      position: absolute;
+      z-index: 6;
+      cursor: pointer;
+      pointer-events: auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .spot-ship-helm:hover {
+      transform: scale(1.12) rotate(45deg);
+      filter: drop-shadow(0 0 25px var(--gold-glow));
+    }
+
+    /* Nautical Carved Plaque covering "MENU" */
+    .plaque-services {
+      position: absolute;
+      z-index: 8;
+      cursor: pointer;
+      pointer-events: auto;
+      background: linear-gradient(180deg, #6c3710 0%, #462007 50%, #2a1102 100%);
+      border: 2px solid #8f5828;
+      border-radius: 7px;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 14px rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 1.5px;
+      color: #ffecd2;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+      transition: all 0.25s ease;
+    }
+
+    .plaque-services:hover {
+      border-color: var(--gold);
+      color: #ffffff;
+      box-shadow: 0 0 20px var(--gold-glow);
+      transform: scale(1.05);
+    }
+
+    /* ==========================================================================
+       6. SERVICES & PRICING SLIDE-OUT DRAWER
+       ========================================================================== */
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 11, 20, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .drawer-scrim.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .services-drawer-pane {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 540px;
+      height: 100%;
+      background: linear-gradient(180deg, #07192b 0%, #030d17 100%);
+      border-left: 2px solid var(--glass-border);
+      box-shadow: -15px 0 50px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .drawer-scrim.active .services-drawer-pane {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 24px 28px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+    }
+
+    .drawer-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      color: var(--pearl);
+    }
+
+    .drawer-header span {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--aqua);
+    }
+
+    .btn-close-drawer {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pearl);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-close-drawer:hover {
+      background: var(--coral);
+      border-color: var(--coral);
+      transform: scale(1.1);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .service-card-item {
+      background: rgba(10, 31, 53, 0.65);
+      border: 1.5px solid rgba(45, 212, 191, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .service-card-item:hover {
+      border-color: var(--aqua);
+      box-shadow: 0 0 20px rgba(45, 212, 191, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .service-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .service-card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--pearl);
+    }
+
+    .service-card-tag {
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .service-card-desc {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--seafoam);
+    }
+
+    .service-specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .service-specs-list li {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-specs-list li::before {
+      content: '✓';
+      color: var(--aqua);
+      font-weight: bold;
+    }
+
+    .drawer-footer {
+      padding: 20px 28px;
+      border-top: 1px solid rgba(45, 212, 191, 0.2);
+      background: rgba(4, 15, 27, 0.95);
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      text-decoration: none;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-action-call {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid var(--sky);
+      color: var(--sky);
+      text-decoration: none;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-action-call:hover {
+      background: var(--sky);
+      color: var(--deep-abyss);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <main id="aquariumApp">
+    <div class="aquarium-stage" id="stageContainer">
+
+      <!-- 3D Pixar Backdrops: Clean Living Aquarium Stage (No baked diver/text) -->
+      <img src="digital_assets/clean_aquarium_bg.jpg" alt="Living 3D Aquarium Stage" class="bg-aquarium bg-landscape" id="bgLandscape">
+      <img src="digital_assets/clean_aquarium_9x16.jpg" alt="Living 3D Aquarium Stage" class="bg-aquarium bg-portrait" id="bgPortrait">
+
+      <!-- App Exit Button [X] in Top-Left Corner -->
+      <button class="btn-app-exit" id="btnAppExit" aria-label="Exit / Return" title="Exit / Close">
+        <span class="exit-x-symbol">✕</span>
+      </button>
+
+      <!-- Volumetric Sunlight & Caustics Overlays -->
+      <div class="god-rays-overlay"></div>
+      <div class="surface-glint"></div>
+
+      <!-- Living Marine Life & Water FX Canvas (Runs at 60 FPS) -->
+      <canvas id="waterFxCanvas"></canvas>
+
+      <!-- Decoupled Kinematic Scuba Diver & Master Unified Chalkboard Rig -->
+      <aside class="diver-actor-rig" id="diverRig" title="Taylor'd Aquatics • Tap chalkboard to view full services">
+        <img src="digital_assets/diver_sprite_transparent.png" alt="Nikki Taylor Scuba Diver Guide" class="diver-sprite-img">
+        <div class="diver-chalkboard-zone" id="diverChalkboard" role="button" tabindex="0" aria-label="View Taylor'd Aquatics Services &amp; Pricing">
+          <div class="chalk-badge" id="slateBadge">★★★★★ CLIENT REVIEWS</div>
+          <div class="chalk-headline" id="slateHeadline">"The only man I trust with my marine reef tanks. Brilliant work!"</div>
+          <div class="chalk-subline" id="slateSubline">— Mark S., Hove</div>
+          <div class="chalk-tap-hint">Tap for Full Services &amp; Pricing →</div>
+        </div>
+      </aside>
+
+      <!-- High-Contrast Vibrant Pebble Branding (Compact & Centered) -->
+      <section class="pebble-brand-wrapper" id="pebbleBrand" title="Taylor'd Aquatics • Bespoke Aquarium Care">
+        <img src="digital_assets/pebble_logo_vibrant_transparent.png" alt="Taylor'd Aquatics" class="pebble-brand-img">
+        <span class="pebble-sub-caption">Bespoke Aquarium Care • Brighton &amp; Hove</span>
+      </section>
+
+      <!-- Articulated Sunken Treasure Chest (Without artificial projector beam) -->
+      <div class="treasure-chest-wrapper" id="treasureChest" title="Sunken Treasure Chest • Tap to open">
+        <div class="chest-interactive-hitbox">
+          <!-- Light cone removed by user request -->
+        </div>
+      </div>
+
+      <!-- Seabed Contact Stones (Exact Alignment to 3D Art) -->
+      <!-- 1. WhatsApp Stone -->
+      <a href="#" class="stone-contact-spot spot-whatsapp" id="stoneWhatsapp" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp with Nikki Taylor">
+        <div class="stone-glow-halo"></div>
+        <div class="stone-tooltip-card">💬 Chat on WhatsApp</div>
+      </a>
+
+      <!-- 2. Phone Stone -->
+      <a href="tel:07909901541" class="stone-contact-spot spot-phone" id="stonePhone" title="Call Nikki Taylor: 07909 901541">
+        <div class="stone-glow-halo"></div>
+        <div class="stone-tooltip-card">📞 Call 07909 901541</div>
+      </a>
+
+      <!-- 3. Facebook Stone -->
+      <a href="https://www.facebook.com/TaylordAquatics" class="stone-contact-spot spot-facebook" id="stoneFacebook" target="_blank" rel="noopener noreferrer" title="Visit Taylor'd Aquatics Facebook Page">
+        <div class="stone-glow-halo"></div>
+        <div class="stone-tooltip-card">📘 Facebook Page</div>
+      </a>
+
+      <!-- 4. Instagram Stone (Toggleable in Config) -->
+      <a href="#" class="stone-contact-spot spot-instagram" id="stoneInstagram" target="_blank" rel="noopener noreferrer" title="Follow on Instagram">
+        <div class="stone-glow-halo"></div>
+        <div class="stone-tooltip-card">📷 Instagram</div>
+      </a>
+
+      <!-- 5. Nautical Ship's Helm (Drawer Trigger) -->
+      <div class="spot-ship-helm" id="shipHelm" title="View Full Services &amp; Maintenance Pricing"></div>
+
+      <!-- 6. Carved Wooden SERVICES Plaque covering "MENU" -->
+      <div class="plaque-services" id="plaqueServices" title="View Full Services &amp; Maintenance Pricing">
+        <span>Services</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Services & Pricing Slide-Over Drawer -->
+  <div class="drawer-scrim" id="drawerScrim">
+    <div class="services-drawer-pane" id="drawerPane">
+      <div class="drawer-header">
+        <div>
+          <h2>Services &amp; Pricing</h2>
+          <span>Professional Aquarium Care • Brighton &amp; Hove</span>
+        </div>
+        <button class="btn-close-drawer" id="btnCloseDrawer" aria-label="Close Drawer">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Service 1: Marine Reefs -->
+        <article class="service-card-item">
+          <div class="service-card-header">
+            <h3 class="service-card-title">Saltwater &amp; Living Reefs</h3>
+            <span class="service-card-tag">Specialist</span>
+          </div>
+          <p class="service-card-desc">Comprehensive marine husbandry for SPS, LPS, and soft coral ecosystems with strict parameter stability.</p>
+          <ul class="service-specs-list">
+            <li>High-precision salinity, KH, Ca, Mg &amp; PO4 testing</li>
+            <li>ICP-OES trace element dosing &amp; correction</li>
+            <li>Protein skimmer, kalkwasser &amp; calcium reactor tuning</li>
+            <li>Sump plumbing, return pump maintenance &amp; leak auditing</li>
+          </ul>
+        </article>
+
+        <!-- Service 2: Tropical Discus -->
+        <article class="service-card-item">
+          <div class="service-card-header">
+            <h3 class="service-card-title">Tropical Discus &amp; Aquascaping</h3>
+            <span class="service-card-tag">Bespoke</span>
+          </div>
+          <p class="service-card-desc">Specialised soft-water biology for delicate Discus and pristine Nature Aquarium planted layouts.</p>
+          <ul class="service-specs-list">
+            <li>Reverse Osmosis (RO/DI) water remineralisation</li>
+            <li>Pressurised CO2 system calibration &amp; pH monitoring</li>
+            <li>Aquascaping plant trimming, fertilization &amp; substrate care</li>
+            <li>Targeted black beard &amp; green hair algae eradication</li>
+          </ul>
+        </article>
+
+        <!-- Service 3: Holiday Cover -->
+        <article class="service-card-item">
+          <div class="service-card-header">
+            <h3 class="service-card-title">Holiday Tank Sitting &amp; Cover</h3>
+            <span class="service-card-tag">Peace of Mind</span>
+          </div>
+          <p class="service-card-desc">Reliable scheduled home visits while you are traveling so you return to a flourishing tank.</p>
+          <ul class="service-specs-list">
+            <li>Precision feeding (zero overfeeding risk)</li>
+            <li>Top-off water replenishment &amp; auto-top-off (ATO) check</li>
+            <li>Emergency backup response across Brighton &amp; East Sussex</li>
+            <li>Direct WhatsApp photo &amp; parameter updates while you're away</li>
+          </ul>
+        </article>
+
+        <!-- Service 4: Garden Ponds -->
+        <article class="service-card-item">
+          <div class="service-card-header">
+            <h3 class="service-card-title">Garden Koi Ponds &amp; Filtration</h3>
+            <span class="service-card-tag">Outdoor</span>
+          </div>
+          <p class="service-card-desc">Seasonal spring opening, autumn leaf netting, and mechanical bead/sieve filter servicing.</p>
+          <ul class="service-specs-list">
+            <li>UV clarifier bulb replacement &amp; quartz sleeve cleaning</li>
+            <li>Sludge vacuuming &amp; beneficial bio-filter seeding</li>
+            <li>Coldwater fish health checks &amp; parasite scrapings</li>
+          </ul>
+        </article>
+
+        <!-- Pricing Guide -->
+        <article class="service-card-item" style="border-color: var(--gold); background: rgba(251, 191, 36, 0.06);">
+          <div class="service-card-header">
+            <h3 class="service-card-title">Transparent Maintenance Rates</h3>
+            <span class="service-card-tag" style="color: var(--gold);">Pricing</span>
+          </div>
+          <p class="service-card-desc">Honest, straightforward pricing without hidden call-out fees across Brighton &amp; Hove.</p>
+          <ul class="service-specs-list">
+            <li><strong>Routine Maintenance:</strong> From £45 / hour</li>
+            <li><strong>Monthly Retainer Packages:</strong> Bespoke plans based on tank volume &amp; visit frequency</li>
+            <li><strong>Emergency Callouts:</strong> Prioritised dispatch within East Sussex</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="drawer-footer">
+        <a href="#" class="btn-action-primary" id="drawerWhatsappBtn" target="_blank" rel="noopener noreferrer">
+          <span>💬 Book via WhatsApp</span>
+        </a>
+        <a href="tel:07909901541" class="btn-action-call">
+          <span>📞 Call Nikki</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exit Confirmation Modal -->
+  <div class="exit-modal-scrim" id="exitModalScrim">
+    <div class="exit-modal-box">
+      <div class="exit-modal-header">
+        <h3>Taylor'd Aquatics</h3>
+        <button class="btn-exit-modal-close" id="btnExitModalClose" aria-label="Close Modal">&times;</button>
+      </div>
+      <p class="exit-modal-text">Leaving the living aquarium? Need bespoke marine reef care, planted aquascaping or holiday tank cover in Brighton &amp; Hove?</p>
+      <div class="exit-modal-actions">
+        <a href="tel:07909901541" class="btn-action-call" style="flex: 1;">
+          <span>📞 Call Nikki</span>
+        </a>
+        <button class="btn-stay-app" id="btnStayApp">
+          <span>Stay in Aquarium</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       7. JAVASCRIPT: MASTER LIVING AQUARIUM & AUDIO ENGINE
+       ========================================================================== -->
+  <script>
+    /* Master Configuration */
+    const AQUARIUM_CONFIG = {
+      businessName: "Taylor'd Aquatics",
+      owner: "Nikki Taylor",
+      phone: "07909 901541",
+      phoneRaw: "07909901541",
+      whatsapp: "447909901541",
+      whatsappMessage: "Hello Nikki, I'm visiting the Taylor'd Aquatics living aquarium and would like to enquire about maintenance services in Brighton & Hove.",
+      facebook: "https://www.facebook.com/TaylordAquatics",
+      address: "92 Lower Chalvington Place, Brighton, East Sussex, BN2 5GZ",
+      
+      social: {
+        instagram: {
+          enabled: false,
+          url: "https://www.instagram.com/taylordaquatics"
+        }
+      },
+
+      // Master Unified Chalkboard Messages (Reviews, Services, Areas)
+      diverMessages: [
+        {
+          badge: "★★★★★ CLIENT REVIEWS",
+          headline: '"The only man I trust with my marine reef tanks. Brilliant work!"',
+          subline: "— Mark S., Hove • Verified Client"
+        },
+        {
+          badge: "✦ REEF SPECIALIST ✦",
+          headline: "Saltwater & Living Reef Care",
+          subline: "ICP Chemistry • Sump Overhauls • Coral Health"
+        },
+        {
+          badge: "★★★★★ CLIENT REVIEWS",
+          headline: '"Honest advice, zero snake oil, and my Discus have never looked healthier."',
+          subline: "— Sarah L., Brighton • Verified Client"
+        },
+        {
+          badge: "✦ AQUASCAPING ✦",
+          headline: "Tropical Discus & Planted Tanks",
+          subline: "CO2 Calibration • RO Water • Algae Eradication"
+        },
+        {
+          badge: "★★★★★ CLIENT REVIEWS",
+          headline: '"Looked after our tanks for two weeks in Italy. Total peace of mind!"',
+          subline: "— David P., East Sussex • Holiday Cover"
+        },
+        {
+          badge: "✦ PEACE OF MIND ✦",
+          headline: "Holiday Tank Sitting & Cover",
+          subline: "Scheduled Home Visits • Emergency Sussex Cover"
+        }
+      ]
+    };
+
+    /* Bind contacts to DOM */
+    const waUrl = `https://wa.me/${AQUARIUM_CONFIG.whatsapp}?text=${encodeURIComponent(AQUARIUM_CONFIG.whatsappMessage)}`;
+    document.getElementById('stoneWhatsapp').href = waUrl;
+    document.getElementById('drawerWhatsappBtn').href = waUrl;
+    document.getElementById('stoneFacebook').href = AQUARIUM_CONFIG.facebook;
+
+    if (AQUARIUM_CONFIG.social.instagram.enabled) {
+      const insta = document.getElementById('stoneInstagram');
+      insta.style.display = 'flex';
+      insta.href = AQUARIUM_CONFIG.social.instagram.url;
+    }
+
+    /* ==========================================================================
+       B. AUTO-STARTING WEB AUDIO DSP ENGINE (ZERO BUTTONS REQUIRED)
+       ========================================================================== */
+    class StudioAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.isReady = false;
+        this.ambientGain = null;
+        this.noiseNode = null;
+      }
+
+      init() {
+        if (this.ctx) return;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContextClass();
+
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.85;
+        this.master.connect(this.ctx.destination);
+
+        this.ambientGain = this.ctx.createGain();
+        this.ambientGain.gain.value = 0.0;
+        this.ambientGain.connect(this.master);
+      }
+
+      autoUnlock() {
+        this.init();
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume().then(() => {
+            if (!this.isReady) {
+              this.isReady = true;
+              this.startAmbient();
+              this.playBubblePop(680);
+            }
+          });
+        } else if (!this.isReady) {
+          this.isReady = true;
+          this.startAmbient();
+          this.playBubblePop(680);
+        }
+      }
+
+      startAmbient() {
+        if (this.noiseNode) return;
+        const bufferSize = this.ctx.sampleRate * 2.5;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99 * b0 + white * 0.05;
+          b1 = 0.95 * b1 + white * 0.15;
+          b2 = 0.85 * b2 + white * 0.3;
+          data[i] = (b0 + b1 + b2) * 0.05;
+        }
+
+        this.noiseNode = this.ctx.createBufferSource();
+        this.noiseNode.buffer = buffer;
+        this.noiseNode.loop = true;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 450;
+        filter.Q.value = 3.5;
+
+        this.noiseNode.connect(filter);
+        filter.connect(this.ambientGain);
+        this.noiseNode.start(0);
+
+        this.ambientGain.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.ambientGain.gain.setTargetAtTime(0.3, this.ctx.currentTime, 0.8);
+      }
+
+      playChestGlug() {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+
+        // Sub-bass displacement
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(190, now);
+        subOsc.frequency.exponentialRampToValueAtTime(56, now + 0.42);
+
+        subGain.gain.setValueAtTime(0.65, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+        subOsc.connect(subGain);
+        subGain.connect(this.master);
+        subOsc.start(now);
+        subOsc.stop(now + 0.42);
+
+        // Liquid chirp
+        const chirpOsc = this.ctx.createOscillator();
+        const chirpGain = this.ctx.createGain();
+        chirpOsc.type = 'triangle';
+        chirpOsc.frequency.setValueAtTime(320, now + 0.04);
+        chirpOsc.frequency.exponentialRampToValueAtTime(700, now + 0.24);
+
+        chirpGain.gain.setValueAtTime(0.01, now);
+        chirpGain.gain.setValueAtTime(0.35, now + 0.05);
+        chirpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+        chirpOsc.connect(chirpGain);
+        chirpGain.connect(this.master);
+        chirpOsc.start(now + 0.04);
+        chirpOsc.stop(now + 0.24);
+
+        // Micro-bubble flurry
+        for (let i = 0; i < 7; i++) {
+          setTimeout(() => {
+            this.playBubblePop(420 + i * 75 + Math.random() * 80);
+          }, 70 + i * 40);
+        }
+      }
+
+      playBubblePop(frequency = 650) {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        const startFreq = frequency + (Math.random() - 0.5) * 60;
+        osc.frequency.setValueAtTime(startFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(startFreq * 2.2, now + 0.11);
+
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+
+        osc.connect(gain);
+        gain.connect(this.master);
+        osc.start(now);
+        osc.stop(now + 0.11);
+      }
+
+      playStoneClink() {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1300, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+        gain.gain.setValueAtTime(0.24, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+        osc.connect(gain);
+        gain.connect(this.master);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
+
+      playWheelClick() {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(90, now + 0.04);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        osc.connect(gain);
+        gain.connect(this.master);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+    }
+
+    const audio = new StudioAudioEngine();
+
+    // Auto-unlock audio on ANY first user gesture
+    ['click', 'touchstart', 'mousemove', 'scroll', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, () => audio.autoUnlock(), { once: true, passive: true });
+    });
+
+    /* ==========================================================================
+       C. KINEMATIC MARINE FAUNA & WATER FX ENGINE (CANVAS 60 FPS)
+       ========================================================================== */
+    const canvas = document.getElementById('waterFxCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const pointer = {
+      x: width * 0.5,
+      y: height * 0.5,
+      prevX: width * 0.5,
+      prevY: height * 0.5,
+      speed: 0,
+      active: false
+    };
+
+    class Ripple {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 4;
+        this.maxRadius = 75 + Math.random() * 40;
+        this.alpha = 0.65;
+        this.speed = 2.4;
+      }
+      update() {
+        this.radius += this.speed;
+        this.alpha *= 0.945;
+      }
+      draw(c) {
+        if (this.alpha <= 0.01) return;
+        c.save();
+        c.strokeStyle = `rgba(56, 189, 248, ${this.alpha})`;
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        c.stroke();
+
+        c.strokeStyle = `rgba(255, 255, 255, ${this.alpha * 0.6})`;
+        c.lineWidth = 1;
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius * 0.85, 0, Math.PI * 2);
+        c.stroke();
+        c.restore();
+      }
+    }
+
+    const ripples = [];
+
+    class PlanktonBubble {
+      constructor(sourceX, sourceY) {
+        this.reset(sourceX, sourceY);
+      }
+      reset(sourceX, sourceY) {
+        this.x = sourceX !== undefined ? sourceX : Math.random() * width;
+        this.y = sourceY !== undefined ? sourceY : height + 10;
+        this.radius = 1.5 + Math.random() * 4.5;
+        this.speedY = 0.6 + Math.random() * 1.5;
+        this.driftX = (Math.random() - 0.5) * 0.6;
+        this.phase = Math.random() * Math.PI * 2;
+        this.alpha = 0.2 + Math.random() * 0.5;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.phase += 0.04;
+        this.x += this.driftX + Math.sin(this.phase) * 0.35;
+        if (this.y < -20) this.reset();
+      }
+      draw(c) {
+        c.save();
+        c.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        c.fill();
+        c.strokeStyle = `rgba(45, 212, 191, ${this.alpha * 0.75})`;
+        c.lineWidth = 0.8;
+        c.stroke();
+        c.restore();
+      }
+    }
+
+    const planktons = Array.from({ length: 32 }, () => new PlanktonBubble());
+
+    /* Continuous stream of regulator exhaust bubbles tracking the animated diver */
+    function spawnDiverBubbles() {
+      const diverRig = document.getElementById('diverRig');
+      let diverX, diverY;
+      if (diverRig) {
+        const rect = diverRig.getBoundingClientRect();
+        diverX = rect.left + rect.width * 0.36;
+        diverY = rect.top + rect.height * 0.62;
+      } else {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        diverX = isLandscape ? width * 0.35 : width * 0.5;
+        diverY = isLandscape ? height * 0.25 : height * 0.18;
+      }
+
+      if (Math.random() < 0.22) {
+        const b = new PlanktonBubble(diverX + (Math.random() - 0.5) * 16, diverY + (Math.random() - 0.5) * 8);
+        b.speedY = 1.6 + Math.random() * 1.2;
+        b.radius = 2 + Math.random() * 3.5;
+        b.alpha = 0.65;
+        planktons.push(b);
+      }
+    }
+
+    /* Kinematic Organic Fish */
+    class OrganicFish {
+      constructor(species, depthLayer) {
+        this.species = species;
+        this.depth = depthLayer;
+        this.scale = depthLayer === 'fg' ? 1.05 : (depthLayer === 'mid' ? 0.72 : 0.48);
+        this.opacity = depthLayer === 'bg' ? 0.62 : 0.96;
+
+        this.x = Math.random() * width;
+        this.y = height * 0.22 + Math.random() * (height * 0.5);
+        this.vx = (Math.random() > 0.5 ? 1 : -1) * (1.1 + Math.random() * 1.2);
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.angle = Math.atan2(this.vy, this.vx);
+
+        this.wavePhase = Math.random() * Math.PI * 2;
+        this.swimSpeed = 0.13;
+        this.panicTimer = 0;
+        this.bubbleTimer = 100 + Math.random() * 200;
+
+        this.numBones = 9;
+        this.boneDist = 6.2 * this.scale;
+      }
+
+      update() {
+        const marginX = 80;
+        const marginY = 90;
+        if (this.x < marginX) this.vx += 0.07;
+        if (this.x > width - marginX) this.vx -= 0.07;
+        if (this.y < marginY) this.vy += 0.05;
+        if (this.y > height - marginY - 110) this.vy -= 0.05;
+
+        const dx = pointer.x - this.x;
+        const dy = pointer.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 130 && pointer.active) {
+          if (pointer.speed > 8) {
+            this.vx -= (dx / dist) * 1.5;
+            this.vy -= (dy / dist) * 1.5;
+            this.panicTimer = 45;
+          } else if (dist > 50 && this.panicTimer <= 0) {
+            this.vx += (dx / dist) * 0.035;
+            this.vy += (dy / dist) * 0.035;
+          }
+        }
+
+        if (this.panicTimer > 0) {
+          this.panicTimer--;
+          this.swimSpeed = 0.28;
+        } else {
+          this.swimSpeed = 0.13;
+        }
+
+        const currentSpeed = Math.hypot(this.vx, this.vy);
+        const maxSpeed = this.panicTimer > 0 ? 5.2 : 2.2;
+        if (currentSpeed > maxSpeed) {
+          this.vx = (this.vx / currentSpeed) * maxSpeed;
+          this.vy = (this.vy / currentSpeed) * maxSpeed;
+        }
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.angle = Math.atan2(this.vy, this.vx);
+        this.wavePhase += this.swimSpeed;
+
+        this.bubbleTimer--;
+        if (this.bubbleTimer <= 0) {
+          this.bubbleTimer = 180 + Math.random() * 250;
+          planktons.push(new PlanktonBubble(this.x, this.y));
+        }
+      }
+
+      draw(c) {
+        c.save();
+        c.translate(this.x, this.y);
+        c.rotate(this.angle);
+
+        if (Math.cos(this.angle) < 0) {
+          c.scale(1, -1);
+        }
+
+        c.globalAlpha = this.opacity;
+
+        const spine = [];
+        for (let i = 0; i < this.numBones; i++) {
+          const x = -i * this.boneDist;
+          const y = Math.sin(this.wavePhase - i * 0.52) * (i * 1.15) * this.scale;
+          spine.push({ x, y });
+        }
+
+        if (this.species === 'clownfish') {
+          this.renderClownfish(c, spine);
+        } else if (this.species === 'bluetang') {
+          this.renderBlueTang(c, spine);
+        } else {
+          this.renderYellowTang(c, spine);
+        }
+
+        c.restore();
+      }
+
+      renderClownfish(c, spine) {
+        const widths = [2, 8, 13, 14, 13, 10, 7, 4, 3].map(w => w * this.scale);
+
+        // Pectoral Fin
+        const finSway = Math.sin(this.wavePhase * 1.5) * 0.35;
+        c.save();
+        c.translate(spine[2].x, spine[2].y + 4 * this.scale);
+        c.rotate(0.3 + finSway);
+        c.fillStyle = 'rgba(255, 107, 53, 0.85)';
+        c.strokeStyle = '#ffffff';
+        c.lineWidth = 1 * this.scale;
+        c.beginPath();
+        c.ellipse(0, 0, 8 * this.scale, 4.5 * this.scale, 0.4, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+        c.restore();
+
+        // Caudal Fin
+        const tailNode = spine[spine.length - 1];
+        c.save();
+        c.translate(tailNode.x, tailNode.y);
+        c.fillStyle = '#ff6b35';
+        c.strokeStyle = '#ffffff';
+        c.lineWidth = 1.4 * this.scale;
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.quadraticCurveTo(-12 * this.scale, -10 * this.scale, -20 * this.scale, -11 * this.scale);
+        c.quadraticCurveTo(-16 * this.scale, 0, -20 * this.scale, 11 * this.scale);
+        c.quadraticCurveTo(-12 * this.scale, 10 * this.scale, 0, 0);
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.restore();
+
+        // Body: Silky smooth Pixar curves
+        c.save();
+        const grad = c.createLinearGradient(0, -15 * this.scale, 0, 15 * this.scale);
+        grad.addColorStop(0, '#ff7d44');
+        grad.addColorStop(0.6, '#ff5722');
+        grad.addColorStop(1, '#d84315');
+        c.fillStyle = grad;
+
+        const bodyPath = new Path2D();
+        bodyPath.moveTo(spine[0].x + 4 * this.scale, spine[0].y);
+        // Top curve
+        for (let i = 0; i < spine.length - 1; i++) {
+          const xc = (spine[i].x + spine[i + 1].x) / 2;
+          const yc = (spine[i].y - widths[i] + spine[i + 1].y - widths[i + 1]) / 2;
+          bodyPath.quadraticCurveTo(spine[i].x, spine[i].y - widths[i], xc, yc);
+        }
+        const last = spine.length - 1;
+        bodyPath.lineTo(spine[last].x, spine[last].y - widths[last]);
+        bodyPath.lineTo(spine[last].x, spine[last].y + widths[last]);
+        // Bottom curve
+        for (let i = spine.length - 1; i > 0; i--) {
+          const xc = (spine[i].x + spine[i - 1].x) / 2;
+          const yc = (spine[i].y + widths[i] + spine[i - 1].y + widths[i - 1]) / 2;
+          bodyPath.quadraticCurveTo(spine[i].x, spine[i].y + widths[i], xc, yc);
+        }
+        bodyPath.quadraticCurveTo(spine[0].x, spine[0].y + widths[0], spine[0].x + 4 * this.scale, spine[0].y);
+        bodyPath.closePath();
+        c.fill(bodyPath);
+
+        // Stripes with clean clipping
+        c.save();
+        c.clip(bodyPath);
+        [1, 4, 7].forEach(idx => {
+          c.save();
+          c.fillStyle = '#ffffff';
+          c.strokeStyle = '#1e293b';
+          c.lineWidth = 1.2 * this.scale;
+          c.beginPath();
+          c.ellipse(spine[idx].x, spine[idx].y, 3.4 * this.scale, widths[idx] * 1.05, 0, 0, Math.PI * 2);
+          c.fill();
+          c.stroke();
+          c.restore();
+        });
+        c.restore();
+
+        // 3D Eye
+        c.fillStyle = '#0f172a';
+        c.beginPath();
+        c.arc(spine[1].x + 2 * this.scale, spine[1].y - 4 * this.scale, 3 * this.scale, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = '#ffffff';
+        c.beginPath();
+        c.arc(spine[1].x + 3 * this.scale, spine[1].y - 4.8 * this.scale, 1.2 * this.scale, 0, Math.PI * 2);
+        c.fill();
+
+        c.restore();
+      }
+
+      renderBlueTang(c, spine) {
+        const widths = [2, 9, 15, 16, 15, 12, 8, 5, 3].map(w => w * this.scale);
+
+        // Yellow Tail
+        const tailNode = spine[spine.length - 1];
+        c.save();
+        c.translate(tailNode.x, tailNode.y);
+        c.fillStyle = '#fbbf24';
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(-18 * this.scale, -12 * this.scale);
+        c.lineTo(-14 * this.scale, 0);
+        c.lineTo(-18 * this.scale, 12 * this.scale);
+        c.closePath();
+        c.fill();
+        c.strokeStyle = '#0f172a';
+        c.lineWidth = 1.2 * this.scale;
+        c.stroke();
+        c.restore();
+
+        // Body: Silky smooth Pixar curves
+        c.save();
+        const grad = c.createLinearGradient(0, -18 * this.scale, 0, 18 * this.scale);
+        grad.addColorStop(0, '#3b82f6');
+        grad.addColorStop(0.5, '#1d4ed8');
+        grad.addColorStop(1, '#0f2b7a');
+        c.fillStyle = grad;
+
+        c.beginPath();
+        c.moveTo(spine[0].x + 4 * this.scale, spine[0].y);
+        for (let i = 0; i < spine.length - 1; i++) {
+          const xc = (spine[i].x + spine[i + 1].x) / 2;
+          const yc = (spine[i].y - widths[i] + spine[i + 1].y - widths[i + 1]) / 2;
+          c.quadraticCurveTo(spine[i].x, spine[i].y - widths[i], xc, yc);
+        }
+        const last = spine.length - 1;
+        c.lineTo(spine[last].x, spine[last].y - widths[last]);
+        c.lineTo(spine[last].x, spine[last].y + widths[last]);
+        for (let i = spine.length - 1; i > 0; i--) {
+          const xc = (spine[i].x + spine[i - 1].x) / 2;
+          const yc = (spine[i].y + widths[i] + spine[i - 1].y + widths[i - 1]) / 2;
+          c.quadraticCurveTo(spine[i].x, spine[i].y + widths[i], xc, yc);
+        }
+        c.quadraticCurveTo(spine[0].x, spine[0].y + widths[0], spine[0].x + 4 * this.scale, spine[0].y);
+        c.closePath();
+        c.fill();
+
+        // Palette Marking
+        c.fillStyle = '#0f172a';
+        c.beginPath();
+        c.ellipse(spine[3].x, spine[3].y - 3 * this.scale, 11 * this.scale, 6 * this.scale, -0.15, 0, Math.PI * 2);
+        c.fill();
+
+        // Eye
+        c.fillStyle = '#0f172a';
+        c.beginPath();
+        c.arc(spine[1].x + 3 * this.scale, spine[1].y - 5 * this.scale, 3.2 * this.scale, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = '#38bdf8';
+        c.beginPath();
+        c.arc(spine[1].x + 4 * this.scale, spine[1].y - 5.8 * this.scale, 1.4 * this.scale, 0, Math.PI * 2);
+        c.fill();
+
+        c.restore();
+      }
+
+      renderYellowTang(c, spine) {
+        const widths = [2, 11, 18, 20, 18, 14, 9, 5, 3].map(w => w * this.scale);
+
+        // Tail
+        const tailNode = spine[spine.length - 1];
+        c.save();
+        c.translate(tailNode.x, tailNode.y);
+        c.fillStyle = '#facc15';
+        c.strokeStyle = '#eab308';
+        c.lineWidth = 1 * this.scale;
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(-16 * this.scale, -9 * this.scale);
+        c.lineTo(-14 * this.scale, 0);
+        c.lineTo(-16 * this.scale, 9 * this.scale);
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.restore();
+
+        // Body: Silky smooth Pixar curves
+        c.save();
+        const grad = c.createLinearGradient(0, -22 * this.scale, 0, 22 * this.scale);
+        grad.addColorStop(0, '#fef08a');
+        grad.addColorStop(0.4, '#facc15');
+        grad.addColorStop(1, '#ca8a04');
+        c.fillStyle = grad;
+
+        c.beginPath();
+        c.moveTo(spine[0].x + 4 * this.scale, spine[0].y);
+        for (let i = 0; i < spine.length - 1; i++) {
+          const xc = (spine[i].x + spine[i + 1].x) / 2;
+          const yc = (spine[i].y - widths[i] + spine[i + 1].y - widths[i + 1]) / 2;
+          c.quadraticCurveTo(spine[i].x, spine[i].y - widths[i], xc, yc);
+        }
+        const last = spine.length - 1;
+        c.lineTo(spine[last].x, spine[last].y - widths[last]);
+        c.lineTo(spine[last].x, spine[last].y + widths[last]);
+        for (let i = spine.length - 1; i > 0; i--) {
+          const xc = (spine[i].x + spine[i - 1].x) / 2;
+          const yc = (spine[i].y + widths[i] + spine[i - 1].y + widths[i - 1]) / 2;
+          c.quadraticCurveTo(spine[i].x, spine[i].y + widths[i], xc, yc);
+        }
+        c.quadraticCurveTo(spine[0].x, spine[0].y + widths[0], spine[0].x + 4 * this.scale, spine[0].y);
+        c.closePath();
+        c.fill();
+
+        // Eye
+        c.fillStyle = '#0f172a';
+        c.beginPath();
+        c.arc(spine[1].x + 4 * this.scale, spine[1].y - 5 * this.scale, 3.2 * this.scale, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = '#ffffff';
+        c.beginPath();
+        c.arc(spine[1].x + 4.8 * this.scale, spine[1].y - 5.8 * this.scale, 1.2 * this.scale, 0, Math.PI * 2);
+        c.fill();
+
+        c.restore();
+      }
+    }
+
+    const school = [
+      new OrganicFish('clownfish', 'fg'),
+      new OrganicFish('bluetang', 'fg'),
+      new OrganicFish('yellowtang', 'mid'),
+      new OrganicFish('clownfish', 'mid')
+    ];
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Plankton & Regulator Bubbles
+      spawnDiverBubbles();
+      planktons.forEach(p => {
+        p.update();
+        p.draw(ctx);
+      });
+
+      // 2. Kinematic Living Fish
+      school.forEach(fish => {
+        fish.update();
+        fish.draw(ctx);
+      });
+
+      // 3. Water Ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.update();
+        r.draw(ctx);
+        if (r.alpha <= 0.01) ripples.splice(i, 1);
+      }
+
+      requestAnimationFrame(render);
+    }
+    render();
+
+    function trackPointer(x, y) {
+      pointer.prevX = pointer.x;
+      pointer.prevY = pointer.y;
+      pointer.x = x;
+      pointer.y = y;
+      pointer.speed = Math.hypot(pointer.x - pointer.prevX, pointer.y - pointer.prevY);
+      pointer.active = true;
+
+      if (Math.random() < 0.16) {
+        ripples.push(new Ripple(x, y));
+      }
+    }
+
+    window.addEventListener('mousemove', (e) => trackPointer(e.clientX, e.clientY));
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) trackPointer(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('click', (e) => {
+      ripples.push(new Ripple(e.clientX, e.clientY));
+      audio.playBubblePop();
+    });
+
+    /* ==========================================================================
+       D. MASTER UNIFIED CHALKBOARD SLATE CONTROLLER
+       ========================================================================== */
+    let messageIndex = 0;
+    const slateBadge = document.getElementById('slateBadge');
+    const slateHeadline = document.getElementById('slateHeadline');
+    const slateSubline = document.getElementById('slateSubline');
+    const diverAnchor = document.getElementById('diverSlateAnchor');
+
+    function advanceSlateMessage() {
+      slateBadge.style.opacity = '0';
+      slateHeadline.style.opacity = '0';
+      slateSubline.style.opacity = '0';
+
+      setTimeout(() => {
+        messageIndex = (messageIndex + 1) % AQUARIUM_CONFIG.diverMessages.length;
+        const msg = AQUARIUM_CONFIG.diverMessages[messageIndex];
+        slateBadge.textContent = msg.badge;
+        slateHeadline.textContent = msg.headline;
+        slateSubline.textContent = msg.subline;
+
+        slateBadge.style.opacity = '1';
+        slateHeadline.style.opacity = '1';
+        slateSubline.style.opacity = '1';
+      }, 350);
+    }
+
+    setInterval(advanceSlateMessage, 6500);
+
+    const diverChalkboard = document.getElementById('diverChalkboard');
+    if (diverChalkboard) {
+      diverChalkboard.addEventListener('click', () => {
+        openDrawer();
+        audio.playStoneClink();
+      });
+    }
+
+    /* ==========================================================================
+       E. ARTICULATED SUNKEN CHEST (SILENT BUBBLE RELEASE - NO LIGHT CONE)
+       ========================================================================== */
+    const treasureChest = document.getElementById('treasureChest');
+    let chestOpenTimeout = null;
+
+    function openChestSequence() {
+      treasureChest.classList.add('is-open');
+
+      // Trigger soft flurries of micro-bubbles from chest (silent and natural)
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const chestX = isLandscape ? width * 0.28 : width * 0.35;
+      const chestY = isLandscape ? height * 0.72 : height * 0.76;
+
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+          const b = new PlanktonBubble(chestX + (Math.random() - 0.5) * 50, chestY);
+          b.speedY = 1.8 + Math.random() * 1.5;
+          b.radius = 2.0 + Math.random() * 3.5;
+          b.alpha = 0.75;
+          planktons.push(b);
+        }, i * 65);
+      }
+
+      clearTimeout(chestOpenTimeout);
+      chestOpenTimeout = setTimeout(() => {
+        treasureChest.classList.remove('is-open');
+      }, 4500);
+    }
+
+    let chestCycle = setInterval(openChestSequence, 14000);
+    setTimeout(openChestSequence, 2000);
+
+    treasureChest.addEventListener('click', () => {
+      clearInterval(chestCycle);
+      openChestSequence();
+      audio.playBubblePop(520);
+      chestCycle = setInterval(openChestSequence, 14000);
+    });
+
+    /* ==========================================================================
+       F. SLIDE-OUT SERVICES DRAWER CONTROLLER
+       ========================================================================== */
+    const drawerScrim = document.getElementById('drawerScrim');
+    const btnCloseDrawer = document.getElementById('btnCloseDrawer');
+    const shipHelm = document.getElementById('shipHelm');
+    const plaqueServices = document.getElementById('plaqueServices');
+    const pebbleBrand = document.getElementById('pebbleBrand');
+
+    function openDrawer() {
+      drawerScrim.classList.add('active');
+      audio.playWheelClick();
+    }
+
+    function closeDrawer() {
+      drawerScrim.classList.remove('active');
+    }
+
+    shipHelm.addEventListener('click', openDrawer);
+    plaqueServices.addEventListener('click', openDrawer);
+    pebbleBrand.addEventListener('click', openDrawer);
+    btnCloseDrawer.addEventListener('click', closeDrawer);
+
+    drawerScrim.addEventListener('click', (e) => {
+      if (e.target === drawerScrim) closeDrawer();
+    });
+
+    /* ==========================================================================
+       G. APP EXIT BUTTON [X] & EXIT CONFIRMATION MODAL
+       ========================================================================== */
+    const btnAppExit = document.getElementById('btnAppExit');
+    const exitModalScrim = document.getElementById('exitModalScrim');
+    const btnExitModalClose = document.getElementById('btnExitModalClose');
+    const btnStayApp = document.getElementById('btnStayApp');
+
+    function openExitModal() {
+      if (exitModalScrim) exitModalScrim.classList.add('active');
+      audio.playWheelClick();
+    }
+
+    function closeExitModal() {
+      if (exitModalScrim) exitModalScrim.classList.remove('active');
+    }
+
+    if (btnAppExit) btnAppExit.addEventListener('click', openExitModal);
+    if (btnExitModalClose) btnExitModalClose.addEventListener('click', closeExitModal);
+    if (btnStayApp) btnStayApp.addEventListener('click', closeExitModal);
+
+    if (exitModalScrim) {
+      exitModalScrim.addEventListener('click', (e) => {
+        if (e.target === exitModalScrim) closeExitModal();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDrawer();
+        closeExitModal();
+      }
+    });
+
+    document.querySelectorAll('.stone-contact-spot').forEach(st => {
+      st.addEventListener('click', () => {
+        audio.playStoneClink();
+      });
+    });
+  </script>
+</body>
+</html>

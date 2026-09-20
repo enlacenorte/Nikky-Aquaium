@@ -1,0 +1,9 @@
+# Git Ignore
+digital_assets/test_*
+digital_assets/inspect_*
+digital_assets/*_raw.*
+digital_assets/*_test.*
+digital_assets/mobile_diver_*
+.DS_Store
+Thumbs.db
+*.tmp
