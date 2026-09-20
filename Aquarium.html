@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Taylor'd Aquatics | Bespoke Living Aquarium • Brighton &amp; Hove</title>
-  <meta name="description" content="Living 3D Pixar-style aquarium web app for Taylor'd Aquatics. Bespoke marine reef care, Discus aquascaping, and holiday tank cover in Brighton &amp; Hove by Nikki Taylor.">
+  <meta name="description" content="Living 3D Pixar-style aquarium web app for Taylor'd Aquatics. Bespoke marine reef care, Discus aquascaping, and holiday tank cover in Brighton &amp; Hove.">
   
   <!-- Favicon Package -->
   <link rel="icon" type="image/x-icon" href="digital_assets/favicon.ico">
@@ -568,7 +568,7 @@
       position: fixed;
       inset: 0;
       background: #020b14;
-      z-index: 9999;
+      z-index: 100001;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -634,14 +634,16 @@
        ========================================================================== */
     .stone-contact-spot {
       position: absolute;
-      z-index: 6;
+      z-index: 25;
       cursor: pointer;
-      pointer-events: auto;
+      pointer-events: auto !important;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
@@ -1074,8 +1076,8 @@
       <canvas id="waterFxCanvas"></canvas>
 
       <!-- 1. Standalone Kinematic Pixar Scuba Diver Swimmer (Positioned at Top) -->
-      <aside class="diver-swimmer-actor" id="diverSwimmerActor" title="Nikki Taylor • Expert Aquarium Care">
-        <img src="digital_assets/pixar_diver_swimmer_transparent.png" alt="Nikki Taylor Scuba Diver" class="diver-swimmer-img">
+      <aside class="diver-swimmer-actor" id="diverSwimmerActor" title="Taylor'd Aquatics • Expert Aquarium Care">
+        <img src="digital_assets/pixar_diver_swimmer_transparent.png" alt="Taylor'd Aquatics Scuba Diver" class="diver-swimmer-img">
       </aside>
 
       <!-- 2. Standalone Nautical Hanging Chalkboard Sign (Positioned Below Diver) -->
@@ -1104,13 +1106,13 @@
 
       <!-- Seabed Contact Stones (Exact Alignment to 3D Art) -->
       <!-- 1. WhatsApp Stone -->
-      <a href="#" class="stone-contact-spot spot-whatsapp" id="stoneWhatsapp" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp with Nikki Taylor">
+      <a href="https://api.whatsapp.com/send?phone=447909901541&amp;text=Hello%2C%20I%27m%20visiting%20the%20Taylor%27d%20Aquatics%20living%20aquarium%20and%20would%20like%20to%20enquire%20about%20bespoke%20aquarium%20maintenance%20services%20in%20Brighton%20%26%20Hove." class="stone-contact-spot spot-whatsapp" id="stoneWhatsapp" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp with Taylor'd Aquatics">
         <div class="stone-glow-halo"></div>
         <div class="stone-tooltip-card">💬 Chat on WhatsApp</div>
       </a>
 
       <!-- 2. Phone Stone -->
-      <a href="tel:07909901541" class="stone-contact-spot spot-phone" id="stonePhone" title="Call Nikki Taylor: 07909 901541">
+      <a href="tel:07909901541" class="stone-contact-spot spot-phone" id="stonePhone" title="Call Taylor'd Aquatics: 07909 901541">
         <div class="stone-glow-halo"></div>
         <div class="stone-tooltip-card">📞 Call 07909 901541</div>
       </a>
@@ -1225,51 +1227,51 @@
       </div>
 
       <div class="drawer-footer">
-        <a href="#" class="btn-action-primary" id="drawerWhatsappBtn" target="_blank" rel="noopener noreferrer">
+        <a href="https://api.whatsapp.com/send?phone=447909901541&amp;text=Hello%2C%20I%27m%20visiting%20the%20Taylor%27d%20Aquatics%20living%20aquarium%20and%20would%20like%20to%20enquire%20about%20bespoke%20aquarium%20maintenance%20services%20in%20Brighton%20%26%20Hove." class="btn-action-primary" id="drawerWhatsappBtn" target="_blank" rel="noopener noreferrer">
           <span>💬 Book via WhatsApp</span>
         </a>
         <a href="tel:07909901541" class="btn-action-call">
-          <span>📞 Call Nikki</span>
+          <span>📞 Call 07909 901541</span>
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Exit Confirmation Modal -->
+  <!-- Exit Confirmation Modal (Pure UK English) -->
   <div class="exit-modal-scrim" id="exitModalScrim">
     <div class="exit-modal-box">
       <div class="exit-modal-header">
         <h3>Taylor'd Aquatics</h3>
         <button class="btn-exit-modal-close" id="btnExitModalClose" aria-label="Close Modal">&times;</button>
       </div>
-      <p class="exit-modal-text">Leaving the living aquarium? Need bespoke marine reef care, planted aquascaping or holiday tank cover in Brighton &amp; Hove?</p>
+      <p class="exit-modal-text">Leaving the living aquarium? For bespoke marine reef care, planted aquascaping or holiday tank cover in Brighton &amp; Hove, get in touch anytime.</p>
       <div class="exit-modal-actions">
         <a href="tel:07909901541" class="btn-action-call" style="width: 100%;">
-          <span>📞 Call Nikki (07909 901541)</span>
+          <span>📞 Call 07909 901541</span>
         </a>
         <div class="exit-modal-buttons-row">
           <button class="btn-stay-app" id="btnStayApp">
-            <span>Volver al Acuario</span>
+            <span>Stay in Aquarium</span>
           </button>
           <button class="btn-action-close-permanent" id="btnCloseAppDefinitive">
-            <span>❌ Cerrar App</span>
+            <span>❌ Exit Experience</span>
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Graceful Fullscreen App Closed Screen -->
+  <!-- Graceful Fullscreen App Closed Screen (Pure UK English) -->
   <div class="app-closed-overlay" id="appClosedOverlay">
     <div class="app-closed-card">
       <div class="app-closed-icon">🐠</div>
       <h2 class="app-closed-title">Taylor'd Aquatics</h2>
-      <p class="app-closed-text">Has salido de la experiencia inmersiva. Para servicios de acuarios en Brighton &amp; Hove, contáctanos cuando gustes.</p>
+      <p class="app-closed-text">You have exited the living aquarium experience. For specialised aquarium care &amp; maintenance across Brighton &amp; Hove, contact our specialists anytime.</p>
       <a href="tel:07909901541" class="btn-action-call" style="width: 100%;">
-        <span>📞 Contactar a Nikki (07909 901541)</span>
+        <span>📞 Call 07909 901541</span>
       </a>
       <button class="btn-reopen-app" id="btnReopenApp">
-        <span>🌊 Reabrir Acuario</span>
+        <span>🌊 Reopen Aquarium</span>
       </button>
     </div>
   </div>
@@ -1281,11 +1283,10 @@
     /* Master Configuration */
     const AQUARIUM_CONFIG = {
       businessName: "Taylor'd Aquatics",
-      owner: "Nikki Taylor",
       phone: "07909 901541",
       phoneRaw: "07909901541",
       whatsapp: "447909901541",
-      whatsappMessage: "Hello Nikki, I'm visiting the Taylor'd Aquatics living aquarium and would like to enquire about maintenance services in Brighton & Hove.",
+      whatsappMessage: "Hello, I'm visiting the Taylor'd Aquatics living aquarium and would like to enquire about bespoke aquarium maintenance services in Brighton & Hove.",
       facebook: "https://www.facebook.com/TaylordAquatics",
       address: "92 Lower Chalvington Place, Brighton, East Sussex, BN2 5GZ",
       
@@ -1331,16 +1332,24 @@
       ]
     };
 
-    /* Bind contacts to DOM */
-    const waUrl = `https://wa.me/${AQUARIUM_CONFIG.whatsapp}?text=${encodeURIComponent(AQUARIUM_CONFIG.whatsappMessage)}`;
-    document.getElementById('stoneWhatsapp').href = waUrl;
-    document.getElementById('drawerWhatsappBtn').href = waUrl;
-    document.getElementById('stoneFacebook').href = AQUARIUM_CONFIG.facebook;
+    /* Bind contacts to DOM dynamically */
+    const waUrl = `https://api.whatsapp.com/send?phone=${AQUARIUM_CONFIG.whatsapp}&text=${encodeURIComponent(AQUARIUM_CONFIG.whatsappMessage)}`;
+    const stoneWa = document.getElementById('stoneWhatsapp');
+    const drawerWa = document.getElementById('drawerWhatsappBtn');
+    const stoneFb = document.getElementById('stoneFacebook');
+    const stonePh = document.getElementById('stonePhone');
+
+    if (stoneWa) stoneWa.href = waUrl;
+    if (drawerWa) drawerWa.href = waUrl;
+    if (stoneFb) stoneFb.href = AQUARIUM_CONFIG.facebook;
+    if (stonePh) stonePh.href = `tel:${AQUARIUM_CONFIG.phoneRaw}`;
 
     if (AQUARIUM_CONFIG.social.instagram.enabled) {
       const insta = document.getElementById('stoneInstagram');
-      insta.style.display = 'flex';
-      insta.href = AQUARIUM_CONFIG.social.instagram.url;
+      if (insta) {
+        insta.style.display = 'flex';
+        insta.href = AQUARIUM_CONFIG.social.instagram.url;
+      }
     }
 
     /* ==========================================================================
