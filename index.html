@@ -141,38 +141,39 @@
     }
 
     /* ==========================================================================
-       APP EXIT BUTTON [X] IN TOP-LEFT CORNER
+       APP EXIT BUTTON [X] IN TOP-LEFT CORNER (ALWAYS TOP LAYER)
        ========================================================================== */
     .btn-app-exit {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      width: 44px;
-      height: 44px;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: rgba(4, 18, 32, 0.78);
-      border: 1.5px solid rgba(45, 212, 191, 0.45);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(45, 212, 191, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(4, 18, 32, 0.88);
+      border: 2px solid var(--aqua);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 16px var(--aqua-glow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       color: #f8fafc;
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.35rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 90;
-      pointer-events: auto;
+      z-index: 99999 !important;
+      pointer-events: auto !important;
+      touch-action: manipulation;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .btn-app-exit:hover {
-      background: rgba(4, 18, 32, 0.95);
+      background: rgba(4, 18, 32, 0.98);
       border-color: var(--gold);
       color: var(--gold);
-      box-shadow: 0 0 18px var(--gold-glow);
-      transform: scale(1.08);
+      box-shadow: 0 0 22px var(--gold-glow);
+      transform: scale(1.1);
     }
 
     .btn-app-exit:active {
@@ -180,92 +181,84 @@
     }
 
     /* ==========================================================================
-       2. DECOUPLED KINEMATIC SCUBA DIVER & CHALKBOARD RIG
+       2. PIXAR SCUBA DIVER & NAUTICAL HANGING CHALKBOARD (SEPARATED LAYOUT)
        ========================================================================== */
-    .diver-actor-rig {
+    /* Standalone Pixar Scuba Diver Swimmer */
+    .diver-swimmer-actor {
       position: absolute;
-      z-index: 7;
+      z-index: 8;
       pointer-events: none;
-      aspect-ratio: 720 / 460;
-      transform-origin: 64% 8%; /* Natural swing from rope mount */
-      animation: diverBuoyancySway 8s ease-in-out infinite alternate;
-      transition: filter 0.3s ease;
+      filter: drop-shadow(0 12px 24px rgba(2, 11, 20, 0.65));
+      animation: diverSwimKinematics 7s ease-in-out infinite alternate;
+      transition: transform 0.4s ease;
     }
 
-    @keyframes diverBuoyancySway {
-      0% { transform: translateY(0px) rotate(0deg); }
-      25% { transform: translateY(-12px) rotate(1.8deg); }
-      50% { transform: translateY(-22px) rotate(-1.5deg); }
-      75% { transform: translateY(-8px) rotate(-2.4deg); }
-      100% { transform: translateY(0px) rotate(0deg); }
+    @keyframes diverSwimKinematics {
+      0% { transform: translateY(0px) rotate(0deg) scale(1); }
+      30% { transform: translateY(-10px) rotate(1.5deg) scale(1.02); }
+      70% { transform: translateY(-18px) rotate(-1.2deg) scale(0.99); }
+      100% { transform: translateY(0px) rotate(0deg) scale(1); }
     }
 
-    /* 16:9 Desktop Placement: Bigger and comfortably centered */
-    @media (min-aspect-ratio: 1/1) {
-      .diver-actor-rig {
-        top: 2%;
-        left: 17%;
-        width: 660px;
-        max-width: 52vw;
-      }
-    }
-
-    /* 9:16 Mobile Placement: Wider presence across top water */
-    @media (max-aspect-ratio: 1/1) {
-      .diver-actor-rig {
-        top: 4.5%;
-        left: 50%;
-        width: 440px;
-        max-width: 96vw;
-        margin-left: -220px;
-        transform-origin: 50% 8%;
-        animation: diverBuoyancySwayMobile 7s ease-in-out infinite alternate;
-      }
-      @keyframes diverBuoyancySwayMobile {
-        0% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-12px) rotate(-1.5deg); }
-        100% { transform: translateY(0px) rotate(0deg); }
-      }
-    }
-
-    .diver-sprite-img {
+    .diver-swimmer-img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 15px 28px rgba(2, 11, 20, 0.55));
       pointer-events: none;
     }
 
-    /* Chalkboard text zone precisely placed over the sprite's wooden chalkboard */
-    .diver-chalkboard-zone {
+    /* Standalone Nautical Hanging Chalkboard Sign */
+    .chalkboard-hanging-rig {
       position: absolute;
-      top: 17%;
-      left: 32%;
-      width: 66%;
-      height: 62%;
+      z-index: 9;
+      pointer-events: auto;
+      cursor: pointer;
+      aspect-ratio: 853 / 714;
+      animation: signSwayBuoyancy 8.5s ease-in-out infinite alternate;
+      transform-origin: 50% 0%;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes signSwayBuoyancy {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .chalkboard-hanging-rig:hover {
+      transform: translateY(-4px) scale(1.03);
+      filter: drop-shadow(0 0 20px rgba(45, 212, 191, 0.4));
+    }
+
+    .chalkboard-frame-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Inner Slate Chalk Zone */
+    .chalkboard-content-zone {
+      position: absolute;
+      top: 36%;
+      left: 14%;
+      width: 72%;
+      height: 48%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 8px 14px;
-      cursor: pointer;
+      padding: 6px 14px;
       pointer-events: auto;
-      border-radius: 12px;
-      background: linear-gradient(145deg, #0c251e 0%, #061712 100%);
-      border: 2px solid #2a584c;
-      box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.85), 0 4px 15px rgba(0, 0, 0, 0.65);
-      transition: all 0.25s ease;
-    }
-
-    .diver-chalkboard-zone:hover {
-      border-color: var(--gold);
-      box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.85), 0 0 18px var(--gold-glow);
+      cursor: pointer;
     }
 
     .chalk-badge {
       font-family: var(--font-ui);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 1.8px;
       text-transform: uppercase;
@@ -277,7 +270,7 @@
 
     .chalk-headline {
       font-family: var(--font-chalk);
-      font-size: 1.48rem;
+      font-size: 1.4rem;
       font-weight: 700;
       line-height: 1.15;
       color: #ffffff;
@@ -291,7 +284,7 @@
 
     .chalk-subline {
       font-family: var(--font-ui);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--seafoam);
       letter-spacing: 0.8px;
@@ -303,7 +296,7 @@
 
     .chalk-tap-hint {
       display: inline-block;
-      margin-top: 4px;
+      margin-top: 5px;
       background: rgba(4, 18, 32, 0.92);
       border: 1.2px solid var(--aqua);
       border-radius: 12px;
@@ -320,25 +313,47 @@
       transition: all 0.25s ease;
     }
 
-    .diver-chalkboard-zone:hover .chalk-tap-hint {
+    .chalkboard-hanging-rig:hover .chalk-tap-hint {
       background: var(--gold);
       border-color: var(--gold);
       color: var(--deep-abyss);
       box-shadow: 0 0 14px var(--gold-glow);
     }
 
-    @media (max-width: 600px) {
-      .diver-chalkboard-zone {
-        top: 17%;
-        left: 32%;
-        width: 66%;
-        height: 62%;
-        padding: 6px 10px;
+    /* 16:9 Desktop Placement */
+    @media (min-aspect-ratio: 1/1) {
+      .diver-swimmer-actor {
+        top: 3%;
+        left: 14%;
+        width: 380px;
       }
-      .chalk-headline { font-size: 1.22rem; min-height: 30px; }
-      .chalk-badge { font-size: 0.62rem; margin-bottom: 2px; }
-      .chalk-subline { font-size: 0.62rem; margin-top: 2px; }
-      .chalk-tap-hint { font-size: 0.56rem; padding: 2px 8px; margin-top: 3px; }
+      .chalkboard-hanging-rig {
+        top: 2%;
+        left: 45%;
+        width: 480px;
+        max-width: 42vw;
+      }
+    }
+
+    /* 9:16 Mobile Placement (Vertical Stack: Diver on Top, Chalkboard Below) */
+    @media (max-aspect-ratio: 1/1) {
+      .diver-swimmer-actor {
+        top: 1.5%;
+        left: 50%;
+        width: 250px;
+        margin-left: -125px;
+      }
+      .chalkboard-hanging-rig {
+        top: 18.5%;
+        left: 50%;
+        width: 360px;
+        max-width: 94vw;
+        margin-left: -180px;
+      }
+      .chalk-headline { font-size: 1.18rem; min-height: 28px; }
+      .chalk-badge { font-size: 0.60rem; }
+      .chalk-subline { font-size: 0.60rem; }
+      .chalk-tap-hint { font-size: 0.55rem; padding: 2px 8px; margin-top: 3px; }
     }
 
     /* ==========================================================================
@@ -1058,16 +1073,21 @@
       <!-- Living Marine Life & Water FX Canvas (Runs at 60 FPS) -->
       <canvas id="waterFxCanvas"></canvas>
 
-      <!-- Decoupled Kinematic Scuba Diver & Master Unified Chalkboard Rig -->
-      <aside class="diver-actor-rig" id="diverRig" title="Taylor'd Aquatics • Tap chalkboard to view full services">
-        <img src="digital_assets/diver_sprite_transparent.png" alt="Nikki Taylor Scuba Diver Guide" class="diver-sprite-img">
-        <div class="diver-chalkboard-zone" id="diverChalkboard" role="button" tabindex="0" aria-label="View Taylor'd Aquatics Services &amp; Pricing">
+      <!-- 1. Standalone Kinematic Pixar Scuba Diver Swimmer (Positioned at Top) -->
+      <aside class="diver-swimmer-actor" id="diverSwimmerActor" title="Nikki Taylor • Expert Aquarium Care">
+        <img src="digital_assets/pixar_diver_swimmer_transparent.png" alt="Nikki Taylor Scuba Diver" class="diver-swimmer-img">
+      </aside>
+
+      <!-- 2. Standalone Nautical Hanging Chalkboard Sign (Positioned Below Diver) -->
+      <section class="chalkboard-hanging-rig" id="diverChalkboard" role="button" tabindex="0" title="Taylor'd Aquatics • Tap to view full services &amp; pricing" aria-label="View Taylor'd Aquatics Services &amp; Pricing">
+        <img src="digital_assets/hanging_chalkboard_frame_transparent.png" alt="Nautical Chalkboard Frame" class="chalkboard-frame-img">
+        <div class="chalkboard-content-zone">
           <div class="chalk-badge" id="slateBadge">★★★★★ CLIENT REVIEWS</div>
           <div class="chalk-headline" id="slateHeadline">"The only man I trust with my marine reef tanks. Brilliant work!"</div>
           <div class="chalk-subline" id="slateSubline">— Mark S., Hove</div>
           <div class="chalk-tap-hint">Tap for Full Services &amp; Pricing →</div>
         </div>
-      </aside>
+      </section>
 
       <!-- High-Contrast Vibrant Pebble Branding (Compact & Centered) -->
       <section class="pebble-brand-wrapper" id="pebbleBrand" title="Taylor'd Aquatics • Bespoke Aquarium Care">
@@ -1602,19 +1622,19 @@
 
     /* Continuous stream of regulator exhaust bubbles tracking the animated diver */
     function spawnDiverBubbles() {
-      const diverRig = document.getElementById('diverRig');
+      const diverActor = document.getElementById('diverSwimmerActor');
       let diverX, diverY;
-      if (diverRig) {
-        const rect = diverRig.getBoundingClientRect();
-        diverX = rect.left + rect.width * 0.36;
-        diverY = rect.top + rect.height * 0.62;
+      if (diverActor) {
+        const rect = diverActor.getBoundingClientRect();
+        diverX = rect.left + rect.width * 0.22;
+        diverY = rect.top + rect.height * 0.46;
       } else {
         const isLandscape = window.innerWidth > window.innerHeight;
-        diverX = isLandscape ? width * 0.35 : width * 0.5;
-        diverY = isLandscape ? height * 0.25 : height * 0.18;
+        diverX = isLandscape ? width * 0.25 : width * 0.5;
+        diverY = isLandscape ? height * 0.12 : height * 0.08;
       }
 
-      if (Math.random() < 0.22) {
+      if (Math.random() < 0.28) {
         const b = new PlanktonBubble(diverX + (Math.random() - 0.5) * 16, diverY + (Math.random() - 0.5) * 8);
         b.speedY = 1.6 + Math.random() * 1.2;
         b.radius = 2 + Math.random() * 3.5;
@@ -2150,16 +2170,28 @@
     const appClosedOverlay = document.getElementById('appClosedOverlay');
     const btnReopenApp = document.getElementById('btnReopenApp');
 
-    function openExitModal() {
+    function openExitModal(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (exitModalScrim) exitModalScrim.classList.add('active');
       audio.playWheelClick();
     }
 
-    function closeExitModal() {
+    function closeExitModal(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (exitModalScrim) exitModalScrim.classList.remove('active');
     }
 
-    function closeAppDefinitively() {
+    function closeAppDefinitively(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       closeExitModal();
       if (appClosedOverlay) {
         appClosedOverlay.classList.add('active');
@@ -2176,18 +2208,37 @@
       }
     }
 
-    function reopenApp() {
+    function reopenApp(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (appClosedOverlay) {
         appClosedOverlay.classList.remove('active');
       }
       audio.playBubblePop(620);
     }
 
-    if (btnAppExit) btnAppExit.addEventListener('click', openExitModal);
-    if (btnExitModalClose) btnExitModalClose.addEventListener('click', closeExitModal);
-    if (btnStayApp) btnStayApp.addEventListener('click', closeExitModal);
-    if (btnCloseAppDefinitive) btnCloseAppDefinitive.addEventListener('click', closeAppDefinitively);
-    if (btnReopenApp) btnReopenApp.addEventListener('click', reopenApp);
+    if (btnAppExit) {
+      btnAppExit.addEventListener('click', openExitModal);
+      btnAppExit.addEventListener('touchstart', openExitModal, { passive: false });
+    }
+    if (btnExitModalClose) {
+      btnExitModalClose.addEventListener('click', closeExitModal);
+      btnExitModalClose.addEventListener('touchstart', closeExitModal, { passive: false });
+    }
+    if (btnStayApp) {
+      btnStayApp.addEventListener('click', closeExitModal);
+      btnStayApp.addEventListener('touchstart', closeExitModal, { passive: false });
+    }
+    if (btnCloseAppDefinitive) {
+      btnCloseAppDefinitive.addEventListener('click', closeAppDefinitively);
+      btnCloseAppDefinitive.addEventListener('touchstart', closeAppDefinitively, { passive: false });
+    }
+    if (btnReopenApp) {
+      btnReopenApp.addEventListener('click', reopenApp);
+      btnReopenApp.addEventListener('touchstart', reopenApp, { passive: false });
+    }
 
     if (exitModalScrim) {
       exitModalScrim.addEventListener('click', (e) => {
