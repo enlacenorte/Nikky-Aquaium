@@ -320,35 +320,35 @@
       box-shadow: 0 0 14px var(--gold-glow);
     }
 
-    /* 16:9 Desktop Placement */
+    /* 16:9 Desktop Placement: Chalkboard hanging at top, Diver swimming below */
     @media (min-aspect-ratio: 1/1) {
-      .diver-swimmer-actor {
-        top: 3%;
-        left: 14%;
-        width: 380px;
-      }
       .chalkboard-hanging-rig {
-        top: 2%;
-        left: 45%;
-        width: 480px;
-        max-width: 42vw;
+        top: 1.5%;
+        left: 36%;
+        width: 500px;
+        max-width: 46vw;
+      }
+      .diver-swimmer-actor {
+        top: 38%;
+        left: 16%;
+        width: 380px;
       }
     }
 
-    /* 9:16 Mobile Placement (Vertical Stack: Diver on Top, Chalkboard Below) */
+    /* 9:16 Mobile Placement: Chalkboard at top, Diver swimming below */
     @media (max-aspect-ratio: 1/1) {
-      .diver-swimmer-actor {
-        top: 1.5%;
-        left: 50%;
-        width: 250px;
-        margin-left: -125px;
-      }
       .chalkboard-hanging-rig {
-        top: 18.5%;
+        top: 1.5%;
         left: 50%;
         width: 360px;
         max-width: 94vw;
         margin-left: -180px;
+      }
+      .diver-swimmer-actor {
+        top: 33%;
+        left: 50%;
+        width: 250px;
+        margin-left: -125px;
       }
       .chalk-headline { font-size: 1.18rem; min-height: 28px; }
       .chalk-badge { font-size: 0.60rem; }
